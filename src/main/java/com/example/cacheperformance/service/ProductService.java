@@ -24,7 +24,7 @@ public class ProductService {
         return ProductDTO.from(product);
     }
 
-    @Cacheable(value = "products_local", key = "#id", cacheManager = "localCacheManager")
+    @Cacheable(value = "local_product", key = "#id", cacheManager = "caffeineProductManager")
     @Transactional(readOnly = true)
     public ProductDTO getProductLocalCache(Long id) {
         System.out.println(">>> (LOKALNY) Pobieranie produktu o ID " + id + " prosto z bazy...");
@@ -34,9 +34,9 @@ public class ProductService {
         return ProductDTO.from(product);
     }
 
-    @Cacheable(value = "products_redis", key = "#id", cacheManager = "redisCacheManager")
+    @Cacheable(value = "distributed_product", key = "#id", cacheManager = "redisCacheManager")
     @Transactional(readOnly = true)
-    public ProductDTO getProductRedisCache(Long id) {
+    public ProductDTO getProductDistributedCache(Long id) {
         System.out.println(">>> (REDIS) Pobieranie produktu o ID " + id + " prosto z bazy...");
         Product product = productRepository.findByIdWithCategory(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono produktu o ID: " + id));
@@ -49,7 +49,7 @@ public class ProductService {
         return products.stream().map(ProductDTO::from).toList();
     }
 
-    @Cacheable(value = "products_local_list", key = "#categoryName", cacheManager = "localCacheManager")
+    @Cacheable(value = "local_products", key = "#categoryName", cacheManager = "caffeineProductsByCategoryManager")
     @Transactional(readOnly = true)
     public List<ProductDTO> getProductsByCategoryLocalCache(String categoryName) {
         System.out.println(">>> (LOKALNY-LISTA) Pobieranie z bazy produktów z kategorii: " + categoryName);
@@ -57,9 +57,9 @@ public class ProductService {
         return products.stream().map(ProductDTO::from).toList();
     }
 
-    @Cacheable(value = "products_redis_list", key = "#categoryName", cacheManager = "redisCacheManager")
+    @Cacheable(value = "distributed_products", key = "#categoryName", cacheManager = "redisCacheManager")
     @Transactional(readOnly = true)
-    public List<ProductDTO> getProductsByCategoryRedisCache(String categoryName) {
+    public List<ProductDTO> getProductsByCategoryDistributedCache(String categoryName) {
         System.out.println(">>> (REDIS-LISTA) Pobieranie z bazy produktów z kategorii: " + categoryName);
         List<Product> products = productRepository.findAllByCategoryName(categoryName);
         return products.stream().map(ProductDTO::from).toList();

@@ -1,7 +1,6 @@
 package com.example.cacheperformance.controller;
 
 import com.example.cacheperformance.model.ProductDTO;
-import com.example.cacheperformance.repository.ProductRepository;
 import com.example.cacheperformance.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,7 @@ public class ProductController {
 
     @GetMapping("/redis-cache/{id}")
     public ProductDTO getProductRedisCache(@PathVariable Long id) {
-        return productService.getProductRedisCache(id);
+        return productService.getProductDistributedCache(id);
     }
 
     @GetMapping("/no-cache/category/{categoryName}")
@@ -45,6 +44,6 @@ public class ProductController {
 
     @GetMapping("/redis-cache/category/{categoryName}")
     public List<ProductDTO> getProductsByCategoryRedisCache(@PathVariable String categoryName) {
-        return productService.getProductsByCategoryRedisCache(categoryName);
+        return productService.getProductsByCategoryDistributedCache(categoryName);
     }
 }
